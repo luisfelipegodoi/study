@@ -1,2 +1,2 @@
 # study
-Learn and Study.
+Design patterns in go language.
