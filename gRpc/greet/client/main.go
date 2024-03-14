@@ -5,6 +5,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	pb "github.com/luisfelipegodoi/study/gRpc/greet/proto"
 )
 
 var addr = "0.0.0.0:50051"
@@ -19,4 +21,8 @@ func main() {
 	}
 
 	defer conn.Close()
+
+	c := pb.NewGreetServiceClient(conn)
+
+	c.Greet()
 }
