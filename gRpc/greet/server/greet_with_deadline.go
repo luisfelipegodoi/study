@@ -15,7 +15,7 @@ func (s *Server) GreetWithDeadline(ctx context.Context, in *pb.GreetRequest) (*p
 
 	for i := 0; i < 3; i++ {
 		if ctx.Err() == context.DeadlineExceeded {
-			log.Println("The client canceled the requisition")
+			log.Println("The client canceled the request")
 			return nil, status.Error(codes.Canceled, "The client canceled the request")
 		}
 
