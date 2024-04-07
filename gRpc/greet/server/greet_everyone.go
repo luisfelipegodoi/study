@@ -7,7 +7,7 @@ import (
 	pb "github.com/luisfelipegodoi/study/gRpc/greet/proto"
 )
 
-func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error {
+func (*Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error {
 	log.Println("GreetEveryone was invoked")
 
 	for {
@@ -21,7 +21,8 @@ func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error
 			log.Fatalf("Error while reading client stream: %v\n", err)
 		}
 
-		res := "Hello" + req.FirstName + "!"
+		res := "Hello " + req.FirstName + "!"
+
 		err = stream.Send(&pb.GreetResponse{
 			Result: res,
 		})
