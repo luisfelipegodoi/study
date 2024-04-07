@@ -35,6 +35,8 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed loading certificates: %v\n", err)
 		}
+
+		opts = append(opts, grpc.Creds(creds))
 	}
 
 	s := grpc.NewServer()
