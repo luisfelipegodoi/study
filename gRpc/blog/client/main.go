@@ -28,4 +28,5 @@ func main() {
 	readBlog(c, id)            // id valid
 	readBlog(c, "aNonValidId") // invalid id
 	updateBlog(c, id)
+	listBlog(c)
 }
