@@ -18,7 +18,7 @@ func (s *Server) ListBlogs(in *emptypb.Empty, stream pb.BlogService_ListBlogsSer
 	ctx := context.Background()
 
 	cur, err := collection.Find(ctx, primitive.D{})
-	if err != nil{
+	if err != nil {
 		return status.Errorf(
 			codes.Internal,
 			fmt.Sprintf("Unknown internal error: %v\n", err),
@@ -27,8 +27,25 @@ func (s *Server) ListBlogs(in *emptypb.Empty, stream pb.BlogService_ListBlogsSer
 
 	defer cur.Close(ctx)
 
-	for cur.Next(ctx){
+	for cur.Next(ctx) {
 		data := &BlogItem{}
-		err := 
+		err := cur.Decode(data)
+		if err != nil {
+			return status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Error while decoding data from MongoDB: %v", err),
+			)
+		}
+
+		stream.Send(documentToBlog(data))
 	}
+
+	if err = cur.Err(); err != nil {
+		return status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknown"),
+		)
+	}
+
+	return nil
 }
