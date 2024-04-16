@@ -8,7 +8,7 @@ import (
 	pb "github.com/luisfelipegodoi/study/gRpc/blog/proto"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/internal/status"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
