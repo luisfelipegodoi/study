@@ -1,2 +1,0 @@
-# study
-Learn and Study.
