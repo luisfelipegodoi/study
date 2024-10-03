@@ -1,6 +1,6 @@
 # IAM
 
-- 
+- Identity and Access Management (Global Service)
 - Used for DDoS protection
 - Comes in 2 flavours:
     - AWS Shield Standard:
