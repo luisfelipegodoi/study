@@ -1,6 +1,24 @@
 # IAM
 
 - Identity and Access Management (Global Service)
+- Users
+    - mapped to a physical user, has a passoword for aws console
+- Groups
+    - contains users only
+- Policies
+    - json document that outlines permissions for users or groups
+- Roles
+    - for EC2 instances or AWS Services
+- Security
+    - MFA + Password Policy
+- AWS CLI
+    - manage your AWS services using the command line
+- AWS SDK
+    - manage your AWS services using a programming language
+- Access Keys
+    - access AWS using the CLI or SDK
+- Audit
+    - IAM Credential Reports & IAM Access Advisor
 - Used for DDoS protection
 - Comes in 2 flavours:
     - AWS Shield Standard:
