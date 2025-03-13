@@ -1,0 +1,54 @@
+run:
+  timeout: 5m
+
+issues:
+  exclude-dirs:
+    - "mocks/"
+  exclude-files:
+    - "vendor/"
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+
+linters-settings:
+  golint:
+    min-confidence: 0.8
+
+linters:
+  disable:
+    - godox
+    - musttag
+  enable-all: false
+  enable:
+    - errcheck
+    - govet
+    - gofmt
+    - gosec
+    - gocyclo
+    - staticcheck
+    - unused
+    - deadcode
+    - ineffassign
+    - gosimple
+    - typecheck
+    - misspell
+    - gocritic
+    - dupl
+    - gosec  # Análise de segurança
+    - exportloopref  # Evita referência incorreta dentro de loops
+    - nolintlint  # Verifica uso correto de `nolint`
+    - unconvert  # Remove conversões de tipo desnecessárias
+    - stylecheck  # Melhora padrões de código
+
+# Exceções específicas para evitar falsos positivos
+linters-exclude-use-default: false
+exclude:
+  - "error return value not checked.*"  # Para casos onde isso não seja um problema real
+  - "don't use underscores in Go names.*"  # Se for um padrão aceito no projeto
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
