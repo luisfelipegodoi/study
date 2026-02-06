@@ -1,0 +1,36 @@
+Repos / Search
+
+helm repo add <name> <url>
+helm repo update
+helm search repo <term>
+helm show values <repo/chart>
+
+
+Install / Update / Rollback
+
+helm install myrel <chart> -n <ns> --create-namespace
+helm upgrade --install myrel <chart> -n <ns> -f values.yaml
+helm rollback myrel 1 -n <ns>
+
+
+Inspecionar Release
+
+helm list -A
+helm status myrel -n <ns>
+helm get values myrel -n <ns>
+helm get manifest myrel -n <ns>
+helm history myrel -n <ns>
+
+
+Dry-run / Template
+
+helm template myrel <chart> -n <ns> -f values.yaml
+helm upgrade --install myrel <chart> -n <ns> -f values.yaml --dry-run --debug
+
+
+Dependencias
+
+helm dependency update
+helm dependency build
+
+
