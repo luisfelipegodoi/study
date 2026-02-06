@@ -1,0 +1,39 @@
+Cluster LifCycle
+
+kind create cluster --name dev
+kind create cluster --name dev --config kind.yaml
+kind get clusters
+kind delete cluster --name dev
+
+
+
+Context Kubeconfig
+
+kubectl config get-contexts
+kubectl config use-context kind-dev
+kubectl cluster-info
+
+
+
+Imagens Locais dentro do kind
+
+kind load docker-image myapp:local --name dev
+kind load docker-image nginx:latest --name dev
+
+
+
+Diagnostico cluster kind
+
+kubectl get nodes -o wide
+kubectl describe node <node>
+kubectl get pods -A
+kubectl get events -A --sort-by=.metadata.creationTimestamp
+
+
+
+Acessar o node do kind (container)
+
+docker ps | grep kind
+docker exec -it <kind-node-container> bash
+
+

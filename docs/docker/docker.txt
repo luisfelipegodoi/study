@@ -1,0 +1,31 @@
+build/run/logs/exec
+
+docker build -t myapp:local .
+docker run --rm -p 8080:8080 myapp:local
+docker ps
+docker logs -f <container>
+docker exec -it <container> sh
+
+
+Imagens e limpeza
+
+docker images
+docker rmi <image>
+docker system df
+docker system prune -af
+
+
+Debug de rede / portas
+
+docker port <container>
+docker inspect <container>
+docker network ls
+docker network inspect <network>
+
+
+Compose
+
+docker compose up -d
+docker compose logs -f
+docker compose down -v
+
