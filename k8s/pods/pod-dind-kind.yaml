@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docker-dind-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: docker-dind
+      image: docker:24.0-dind
+      securityContext:
+        privileged: true
+      command:
+        - sh
+        - -c
+        - |
+          dockerd-entrypoint.sh >/tmp/dockerd.log 2>&1 &
+
+          until docker info >/dev/null 2>&1; do
+            echo "waiting for docker daemon..."
+            sleep 2
+          done
+
+          apk add --no-cache curl
+          curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-linux-amd64
+          chmod +x /usr/local/bin/kind
+
+          echo "== files in /config =="
+          ls -l /config
+
+          if kind get clusters | grep -qx cluster-dind; then
+            echo "kind cluster cluster-dind already exists, skipping creation"
+          else
+            kind create cluster --name cluster-dind --config /config/kind-cluster.yaml --wait 120s
+          fi
+
+          echo "== kind clusters =="
+          kind get clusters
+
+          echo "== docker containers =="
+          docker ps -a
+
+          tail -f /tmp/dockerd.log /dev/null
+      volumeMounts:
+        - name: docker-graph-storage
+          mountPath: /var/lib/docker
+        - name: kind-config
+          mountPath: /config
+  volumes:
+    - name: docker-graph-storage
+      emptyDir: {}
+    - name: kind-config
+      configMap:
+        name: kind-config

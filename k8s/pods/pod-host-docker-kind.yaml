@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kind-via-remote-docker
+spec:
+  restartPolicy: Never
+  containers:
+    - name: kind
+      image: alpine:3.20
+      command:
+        - sh
+        - -c
+        - |
+          set -e
+
+          echo "== mounted files =="
+          ls -l /users
+
+          cp /users/kubectl /usr/local/bin/kubectl
+          cp /users/helm /usr/local/bin/helm
+          cp /users/kind /usr/local/bin/kind
+
+          chmod +x /usr/local/bin/kubectl
+          chmod +x /usr/local/bin/helm
+          chmod +x /usr/local/bin/kind
+
+          echo "== versions =="
+          kubectl version --client
+          helm version
+          kind version
+
+          sleep infinity
+      volumeMounts:
+        - name: tools
+          mountPath: /users
+          readOnly: true
+  volumes:
+    - name: tools
+      hostPath:
+        path: /Users/luisfelipegodoi/repository/study/k8s
+        type: Directory
