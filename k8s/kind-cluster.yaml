@@ -5,6 +5,10 @@ name: cluster
 nodes:
   - role: control-plane
     extraPortMappings:
-      - containerPort: 31566
-        hostPort: 4566
+      - containerPort: 31000 #vote
+        hostPort: 8080
+        protocol: TCP
+
+      - containerPort: 31001 #result
+        hostPort: 8081
         protocol: TCP

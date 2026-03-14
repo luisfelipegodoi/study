@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-inspect
+spec:
+  restartPolicy: Never
+  containers:
+    - name: inspect
+      image: alpine:3.20
+      securityContext:
+        privileged: true
+      command:
+        - sh
+        - -c
+        - |
+          ls -l /host/var/run || true
+          ls -l /host/run || true
+          sleep 3600
+      volumeMounts:
+        - name: host-var-run
+          mountPath: /host/var/run
+        - name: host-run
+          mountPath: /host/run
+  volumes:
+    - name: host-var-run
+      hostPath:
+        path: /var/run
+    - name: host-run
+      hostPath:
+        path: /run
