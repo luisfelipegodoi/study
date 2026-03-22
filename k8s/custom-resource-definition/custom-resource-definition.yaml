@@ -1,0 +1,5 @@
+apiVersion:
+kind: CustomResourceDefinition
+metadata:
+  name: my-custom-resource-definition
+spec: 
