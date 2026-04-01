@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kind-cluster-creator
+  namespace: default
+spec:
+  restartPolicy: Never
+  containers:
+    - name: kind
+      image: kindest/node:v1.34.0
+      securityContext:
+        privileged: true
+      command:
+        - /bin/sh
+        - -c
+        - |
+          set -eu
+
+          CLUSTER_NAME="my-cluster"
+          OUT_FILE="/shared/${CLUSTER_NAME}.kubeconfig"
+
+          echo "[1/4] criando cluster kind..."
+          kind create cluster --name "${CLUSTER_NAME}"
+
+          echo "[2/4] exportando kubeconfig..."
+          kind export kubeconfig --name "${CLUSTER_NAME}" --kubeconfig "${OUT_FILE}"
+
+          echo "[3/4] kubeconfig gerado em ${OUT_FILE}"
+          ls -l /shared
+          echo
+          echo "===== INICIO DO KUBECONFIG ====="
+          cat "${OUT_FILE}"
+          echo "===== FIM DO KUBECONFIG ====="
+
+          echo "[4/4] mantendo pod vivo para kubectl cp"
+          sleep 36000
+      volumeMounts:
+        - name: shared
+          mountPath: /shared
+  volumes:
+    - name: shared
+      emptyDir: {}
