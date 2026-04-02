@@ -4,10 +4,15 @@ helm repo add <name> <url>
 helm repo update
 helm search repo <term>
 helm show values <repo/chart>
+helm search hub wordpress
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm search repo wordpress
+helm repo list
 
 
 Install / Update / Rollback
 
+helm install bravo bitnami/drupal
 helm install myrel <chart> -n <ns> --create-namespace
 helm upgrade --install myrel <chart> -n <ns> -f values.yaml
 helm rollback myrel 1 -n <ns>
@@ -32,5 +37,4 @@ Dependencias
 
 helm dependency update
 helm dependency build
-
 
