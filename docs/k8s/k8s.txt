@@ -1,5 +1,6 @@
-Contexto e “estado geral”
+...::: Contexto e “estado geral” :::...
 
+kubectl config set context --current --namespace=task1
 kubectl config get-contexts
 kubectl config use-context <ctx>
 kubectl get nodes -o wide
@@ -7,7 +8,7 @@ kubectl get ns
 kubectl get pods -A
 
 
-Aplicar / remover manifests
+...::: Aplicar / remover manifests :::...
 
 kubectl apply -f manifest.yaml
 kubectl apply -k ./kustomize-dir
@@ -15,14 +16,14 @@ kubectl delete -f manifest.yaml
 kubectl diff -f manifest.yaml
 
 
-Inspecionar recursos
+...::: Inspecionar recursos :::...
 
 kubectl get deploy,rs,po,svc,ing -n <ns>
 kubectl describe pod <pod> -n <ns>
 kubectl get events -n <ns> --sort-by=.metadata.creationTimestamp
 
 
-Logs e troubleshooting
+...::: Logs e troubleshooting :::...
 
 kubectl logs -f <pod> -n <ns>
 kubectl logs -f <pod> -c <container> -n <ns>
@@ -30,14 +31,14 @@ kubectl exec -it <pod> -n <ns> -- sh
 kubectl port-forward -n <ns> svc/<svc> 8080:80
 
 
-Rollout (deploys)
+...::: Rollout (deploys) :::...
 
 kubectl rollout status deploy/<deploy> -n <ns>
 kubectl rollout history deploy/<deploy> -n <ns>
 kubectl rollout undo deploy/<deploy> -n <ns>
 
 
-Services / endpoints / DNS
+...::: Services / endpoints / DNS :::...
 
 kubectl get svc -n <ns>
 kubectl get endpoints -n <ns>
@@ -45,28 +46,33 @@ kubectl get endpointSlice -n <ns>
 kubectl get ingress -n <ns>
 
 
-Config e secrets
+...::: Config e secrets :::...
 
 kubectl get cm,secret -n <ns>
 kubectl describe cm/<cm> -n <ns>
 kubectl create secret generic mysecret --from-literal=key=value -n <ns>
 
 
-Pega recurso e salva
+...::: Pega recurso e salva :::...
 
 kubectl get <kind> <name> -n <ns> -o yaml > dump.yaml
 kubectl get <kind> -n <ns> -o wide
 
 
-Esperar Condicao
+...::: Esperar Condicao :::...
 
 kubectl wait --for=condition=Ready pod -l app=myapp -n <ns> --timeout=120s
 kubectl wait --for=condition=Available deploy/myapp -n <ns> --timeout=120s
 
 
-Filtrar por label
+...::: Filtrar por label :::...
 
 kubectl get po -n <ns> -l app=myapp
 kubectl describe po -n <ns> -l app=myapp
 
 
+...::: Truques :::...
+
+k create deployment mydeployment --image=busybox --replicas=3 --dry-run=client -o yaml > 3-deploy.yaml
+k explain pods
+k get po -n <ns> -o jsonpath='{.items[*].metadata.name}'
