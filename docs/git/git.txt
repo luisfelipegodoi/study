@@ -1,0 +1,19 @@
+ Branches
+→ [git switch -c feature/nome] Cria e muda de branch de uma vez. Substituto moderno do checkout -b.
+→ [git diff main...feature] Mostra o que sua branch tem a mais antes de abrir PR.
+→ [git cherry-pick <hash>] Aplica um commit específico de outra branch sem mergear tudo.
+
+📜 Histórico
+→ [git log --oneline --graph --all] Visualiza o histórico completo como árvore. Muito mais legível que o log padrão.
+→ [git reflog] O "desfazer supremo". Mostra tudo que aconteceu, inclusive commits aparentemente perdidos.
+→ [git bisect start] → [git bisect bad] → [git bisect good <hash>] Busca binária pra achar qual commit introduziu um bug. Salva horas de debug manual.
+
+✏️ Ajustando commits
+→ [git add arquivo && git commit --amend --no-edit] Adiciona arquivo esquecido no último commit sem alterar a mensagem. O git add antes é obrigatório.
+→ [git rebase -i HEAD~N] Squash, reorder, editar mensagens. Deixa o histórico limpo antes de mergear.
+→ [git stash push -m "mensagem"] Guarda trabalho inacabado com nome. Muito melhor que stash anônimo que você esquece depois.
+
+🔙 Desfazendo com cuidado
+→ [git restore --staged arquivo] Tira do stage sem perder as mudanças. Substituto moderno do reset HEAD.
+→ [git revert <hash>] Desfaz um commit criando um novo. A forma segura em branches compartilhadas.
+→ [git reset --hard <hash>] Volta a um commit específico descartando tudo que veio depois. Sem Ctrl+Z aqui.
