@@ -1,0 +1,429 @@
+CKAD – Questões Comentadas (Baseadas em Prova Real)
+
+1. NetworkPolicy – aplicar label nos Pods
+
+Cenário
+
+Uma NetworkPolicy já existe e permite tráfego apenas para pods com determinado label.
+Os pods existentes não estão recebendo tráfego.
+
+A tarefa é aplicar o label correto nos pods.
+
+Passos
+
+Listar pods:
+
+kubectl get pods –show-labels
+
+Ver NetworkPolicy:
+
+kubectl get netpol
+kubectl describe netpol POLICY_NAME
+
+Exemplo de selector na policy:
+
+podSelector:
+matchLabels:
+role: frontend
+
+Aplicar label no pod:
+
+kubectl label pod POD_NAME role=frontend
+
+Pegadinha da prova
+
+A NetworkPolicy já está correta.
+O problema normalmente é apenas label ausente no pod.
+
+Dica de estudo
+
+Sempre conferir:
+
+podSelector
+namespaceSelector
+
+⸻
+
+2. ResourceQuota – requests e limits
+
+Cenário
+
+O namespace possui uma ResourceQuota.
+
+A tarefa pede:
+	•	adicionar requests
+	•	adicionar limits
+	•	limite de memória deve ser metade do permitido pela quota
+
+Ver ResourceQuota
+
+kubectl get resourcequota
+kubectl describe resourcequota
+
+Exemplo:
+
+limits.memory: 1Gi
+
+Então o limite do pod deve ser:
+
+512Mi
+
+Exemplo YAML
+
+resources:
+requests:
+memory: “256Mi”
+cpu: “200m”
+limits:
+memory: “512Mi”
+cpu: “500m”
+
+Pegadinha da prova
+
+Se requests ou limits não existirem o pod não será criado.
+
+Erro comum:
+
+exceeded quota
+
+Dica
+
+Sempre verificar quota antes:
+
+kubectl describe quota
+
+⸻
+
+3. LimitRange – definir limites
+
+Cenário
+
+O namespace possui um LimitRange.
+
+O pod precisa respeitar limites definidos.
+
+Ver LimitRange
+
+kubectl get limitrange
+kubectl describe limitrange
+
+Exemplo:
+
+default:
+cpu: 500m
+memory: 256Mi
+
+defaultRequest:
+cpu: 200m
+memory: 128Mi
+
+Solução
+
+Adicionar resources ao pod:
+
+resources:
+requests:
+cpu: “200m”
+memory: “128Mi”
+limits:
+cpu: “500m”
+memory: “256Mi”
+
+Pegadinha
+
+O pod falha se:
+
+limit > max
+
+ou
+
+request < min
+
+⸻
+
+4. Rollout – alterar imagem e rollback
+
+Cenário
+
+Atualizar imagem do deployment e depois fazer rollback.
+
+Atualizar imagem
+
+kubectl set image deployment/web nginx=nginx:1.21
+
+Ver rollout
+
+kubectl rollout status deployment/web
+
+Rollback
+
+kubectl rollout undo deployment/web
+
+Ver histórico
+
+kubectl rollout history deployment/web
+
+Pegadinha
+
+Imagem errada causa:
+
+ImagePullBackOff
+
+⸻
+
+5. Deployment – rollout pausado
+
+Cenário
+
+Deployment precisa ser alterado mas o rollout está pausado.
+
+Ver status
+
+kubectl rollout status deployment app
+
+Ver deployment
+
+kubectl describe deployment app
+
+Solução
+
+Despausar rollout:
+
+kubectl rollout resume deployment app
+
+Pegadinha
+
+Mesmo alterando a imagem com:
+
+kubectl set image
+
+nada acontece se o rollout estiver pausado.
+
+⸻
+
+6. Ingress – Traefik
+
+Cenário
+
+Criar ingress com:
+	•	host
+	•	path prefix
+	•	ingressClass = traefik
+
+YAML
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: app-ingress
+spec:
+ingressClassName: traefik
+rules:
+	•	host: app.example.com
+http:
+paths:
+	•	path: /
+pathType: Prefix
+backend:
+service:
+name: app-service
+port:
+number: 80
+
+Pegadinha
+
+Ingress não funciona sem ingressClassName.
+
+⸻
+
+7. Deployment + Service NodePort
+
+Cenário
+
+Criar deployment e expor via NodePort.
+
+Criar deployment
+
+kubectl create deployment web –image=nginx
+
+Criar service
+
+kubectl expose deployment web 
+–type=NodePort 
+–port=80
+
+Ver service
+
+kubectl get svc
+
+Pegadinha
+
+Service só funciona se selector bater com labels do pod.
+
+⸻
+
+8. RBAC – criar ServiceAccount + RoleBinding
+
+Cenário
+
+Pod com erro de permissão.
+
+Criar:
+	•	ServiceAccount
+	•	RoleBinding
+
+Criar ServiceAccount
+
+kubectl create sa app-sa
+
+Criar RoleBinding
+
+kubectl create rolebinding app-rb 
+–role=reader 
+–serviceaccount=default:app-sa
+
+Pegadinha
+
+Formato correto do service account:
+
+namespace:serviceaccount
+
+⸻
+
+9. RBAC – role existente
+
+Cenário
+
+ServiceAccount já existe.
+
+Criar RoleBinding correto.
+
+Ver roles
+
+kubectl get roles
+
+Criar binding
+
+kubectl create rolebinding bind-role 
+–role=pod-reader 
+–serviceaccount=default:existing-sa
+
+Dica
+
+Ver logs do pod:
+
+kubectl logs POD_NAME
+
+⸻
+
+10. Secret – substituir env hardcoded
+
+Cenário
+
+Pod tem variáveis de ambiente hardcoded.
+
+Transformar em Secret.
+
+Criar secret
+
+kubectl create secret generic db-secret 
+–from-literal=username=admin 
+–from-literal=password=123
+
+Usar no pod
+
+env:
+	•	name: USERNAME
+valueFrom:
+secretKeyRef:
+name: db-secret
+key: username
+
+⸻
+
+11. Deployment antigo (v1.15)
+
+Cenário
+
+Deployment YAML antigo precisa ser corrigido.
+
+Correções
+
+apiVersion:
+
+apps/v1
+
+Adicionar selector:
+
+selector:
+matchLabels:
+app: web
+
+Pegadinha
+
+Deployment não funciona sem selector.
+
+⸻
+
+12. Canary Deployment
+
+Cenário
+
+Deployment existente.
+
+Criar canary com 20% do tráfego.
+
+Namespace permite máximo de 10 pods.
+
+Solução
+
+Deployment original:
+
+replicas: 8
+
+Deployment canary:
+
+replicas: 2
+
+Service deve apontar para ambos deployments.
+
+Pegadinha
+
+Service precisa selecionar os dois deployments.
+
+⸻
+
+13. Docker / OCI
+
+Cenário
+
+Build de imagem e exportar em tar.
+
+Build
+
+docker build -t myapp:v1 .
+
+Exportar
+
+docker save myapp:v1 -o myapp.tar
+
+Pegadinha
+
+Nome e tag devem ser exatamente os solicitados.
+
+⸻
+
+Observação importante
+
+Essas questões mostram forte foco em:
+	•	RBAC
+	•	Deployments
+	•	Resources
+	•	NetworkPolicy
+	•	Ingress
+	•	Rollout
+	•	Troubleshooting
+
+Isso é consistente com o blueprint oficial da CKAD.
+
+⸻
